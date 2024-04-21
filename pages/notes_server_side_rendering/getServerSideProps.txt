@@ -1,0 +1,257 @@
+So getStaticProps is a very useful function
+
+which you can export in your page components to ensure
+
+that your pre-rendered pages contain data
+
+you might need to wait for.
+
+Now with revalidate, you can ensure
+
+that this page is also updated regularly after deployment.
+
+But sometimes even a regular update is not enough.
+
+Sometimes you really want to regenerate this page
+
+for every incoming request.
+
+So you want to pre-generate the page dynamically
+
+on the fly after deployment on the server.
+
+Not during the build process
+
+and not every couple of seconds,
+
+but for every request.
+
+And if that's your goal,
+
+then there is an alternative to getStaticProps.
+
+Now, I will comment out getStaticProps,
+
+because it is the better choice here
+
+and I wanna use it later again.
+
+But I want to show you this alternative as well.
+
+And that would be another function which you can export.
+
+A function that can also be async if you want to.
+
+And that's the getServerSideProps function.
+
+Just like getStaticProps, that is a reserved name,
+
+which NextJS will be looking for.
+
+And the difference to getStaticProps
+
+is that this function will now not run
+
+during the build process,
+
+but instead always on the server after deployment.
+
+Now you will still return an object here,
+
+an object with a props property,
+
+because after all, this function still is
+
+about getting the props for this page component.
+
+And you can still then fetch data from an API here,
+
+or from the file system, whatever you want to do.
+
+Any code you write in here will always run on the server,
+
+never in the client.
+
+So you can run the server side code in here,
+
+you can also perform operations that use credentials
+
+that should not be exposed to your users,
+
+because this code only runs on the server.
+
+And then ultimately, you return your props object.
+
+So here an object with a meetups key,
+
+which holds my dummy meetups, for example.
+
+Now you can't set revalidate here,
+
+because it doesn't make any sense here.
+
+This getServerSideProps function runs
+
+for every incoming requests anyways,
+
+so there is no need to revalidate every x seconds.
+
+Now what you can do in here,
+
+is you can work with a parameter,
+
+which you'll receive. The context parameter.
+
+You actually also get this and getStaticProps,
+
+but I will come back to it there, later.
+
+You do get it here and getServerSideProps as well.
+
+And there in this context argument,
+
+in this context parameter.
+
+You also get access to the request object
+
+under direct key, and the response object
+
+that will be sent back.
+
+And if you worked with NodeJS and Express before,
+
+this might look familiar to you.
+
+There, you also get request and response objects
+
+in your middleware to then work with those.
+
+And especially having access
+
+to the concrete request object can be helpful.
+
+For example, when you're working with authentication,
+
+and you need to check some session cookie
+
+or anything like this.
+
+This is something which I show in my full NextJS course,
+
+it's a little too advanced here.
+
+But you do have access to the incoming request
+
+and all its headers and the request body if you need to.
+
+And that then might give you extra data or information,
+
+which you need for the code that executes
+
+in getServerSideProps.
+
+Ultimately, you then don't return a response
+
+by working on that response object here,
+
+but instead, you return this object with the props key,
+
+which holds the props for this page component function.
+
+So that is how you then can use getServerSideProps
+
+for preparing that data for your page.
+
+And if we do use getServerSideProps here,
+
+if we save everything, if I reload the starting page,
+
+you see it works just as before,
+
+and if we view the page source,
+
+we also see all the data in there again.
+
+The unordered list with all the list items.
+
+That works exactly as we learned it,
+
+but now their page is really pre-generated
+
+for every incoming request.
+
+Now, which one of the two should you use?
+
+Is getServerSideProps better or getStaticProps?
+
+getServerSideProps might sound better
+
+because it's guaranteed to run for every request.
+
+But that actually can be a disadvantage,
+
+because that means that you need to wait for your page
+
+to be generated on every incoming request.
+
+Now if you don't have data that changes all the time,
+
+and with that, I really mean
+
+that it changes multiple times every second.
+
+And if you don't need access to the request object,
+
+let's say for authentication,
+
+getStaticProps is actually better.
+
+Because there you pre-generate an HTML file,
+
+that file can then be stored and served by a CDN.
+
+And that simply is faster than regenerating
+
+and fetching that data for every incoming request.
+
+So your page will be faster when working
+
+with getStaticProps, because then it can be cached
+
+and reused, instead of regenerated all the time.
+
+Hence, you should really only use getServerSideProps
+
+if you need access to that concrete request object,
+
+because you don't have access to request
+
+and response in getStaticProps.
+
+Or if you really have data
+
+that changes multiple times every second,
+
+then therefore even revalidate won't help you,
+
+then getServerSideProps is a great choice.
+
+Now here for our meetup list, though,
+
+it's not a great choice, because that is not data,
+
+which changes frequently.
+
+And here I also don't need to work
+
+with the incoming request.
+
+And therefore I will comment getServerSideprops out again,
+
+and comment getStaticProps in.
+
+Because with that, we can take advantage of the caching
+
+and we're not regenerating the page multiple times,
+
+unnecessarily.

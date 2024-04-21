@@ -1,0 +1,279 @@
+tgetStaticPaths
+
+is another function
+
+NextJS understands,
+
+just like getStaticProps
+
+and getServerSideProps.
+
+And getStaticPaths is a function you need to export
+
+in a page component file.
+
+If it's a dynamic page
+
+like we have it here and you're using getStaticProps,
+
+not if you're using getServerSideProps
+
+and not if you're using neever get static
+
+nor getServerSideProps
+
+but it is needed if you do use getStaticProps.
+
+So in that case, you need to export another function here
+
+in this page component file.
+
+And that's the getStaticPaths function.
+
+And this can also be a async function
+
+so that you can use a single weight in there.
+
+Now what's the deal with getStaticPaths though.
+
+To understand it, let's again think about the fact
+
+that with getStaticProps
+
+a page is pre-generated during the build process.
+
+Now, what does this mean?
+
+This means that of course, NextJS needs to pre-generate
+
+all versions of this dynamic page in advance
+
+for all the supported IDs.
+
+Because since this is dynamic, NextJS needs to know
+
+for which ID values it should pre-generate the page.
+
+Because how would it pre-generate this page otherwise?
+
+We get the ID from the URL here.
+
+Great, but keep in mind that this is not pre-generated
+
+when a user visits this page with a specific value
+
+in the URL, but during the build process.
+
+So here we need to pre-generated for all the URLs,
+
+for all the meetup ID values users might be entering
+
+at runtime.
+
+And if they enter an ID for which we didn't pre-generate
+
+the page, they will see a 404 error.
+
+But because that is how it works,
+
+we need to add getStaticPaths
+
+which has the job of returning an object
+
+where we describe all the dynamic segment values.
+
+So all the meetup IDs in this case,
+
+for which this page should be pre-generated.
+
+Now for this, this object needs to have a paths key,
+
+which is an array.
+
+And in that array, you must have multiple objects
+
+one object per version of this dynamic page.
+
+Where this object has a parans key.
+
+That's a must have, which then itself again is an object
+
+with all the key value pairs
+
+that might lead to your dynamic page.
+
+So if you have multiple dynamic segments,
+
+then you would have multiple keys in this nested object.
+
+Here we only have meetup ID as a single dynamic segment.
+
+And hence here in this parans object,
+
+we would add a meetup ID key
+
+and then enter the concrete value for meetup ID
+
+for which this page should be pre-generated.
+
+And if we have multiple possible values.
+
+Like in this case where I have, M1 and M2
+
+we would return a paths array with two objects inside of it,
+
+where the other one uses M2 as a meetup ID.
+
+Now, in reality, you would of course not hard-code this
+
+as a developer,
+
+but you would also fetch your supported IDs from a database
+
+or from an API and generate this array dynamically.
+
+And we are also going to do that later,
+
+but for the moment let's hard-code it.
+
+With that, if you save that file with getStaticPaths added
+
+with this code and with getStaticProps
+
+still being in there, with that if you now reload,
+
+we don't get this error anymore.
+
+Instead we get this error regarding the fallback key
+
+instead of getStaticPaths.
+
+And that's another piece of configuration,
+
+which you need to add in this returned object
+
+next to your paths key,
+
+the fallback key.
+
+This key tells NextJS whether your paths array
+
+contains all supported parameter values
+
+or just some of them.
+
+If you set fall back to false,
+
+you say that your paths
+
+contains all supported meetup ID values.
+
+That means that if the user enters anything
+
+that's not supported here, for example, M3
+
+he or she would see a 404 error.
+
+If you set fall back to true on the other hand,
+
+NextJS would try to generate a page
+
+for this meetup ID dynamically on the server
+
+for the incoming request.
+
+Fall back is a nice feature
+
+because it allows you to pre-generate some of your pages
+
+for specific meetup ID values.
+
+For example the pages which are visited most frequently
+
+and then pre-generate the missing ones dynamically
+
+when requests for them are coming in.
+
+Here however, I'll set fallback to false
+
+to indicate that I defined all supported paths here.
+
+Now, if you wanna learn more about fallback and so on,
+
+I do cover that in greater detail in my full course.
+
+But the general concept
+
+is that we can simply define some paths
+
+instead of all paths.
+
+If we, for example, have hundreds of pages
+
+and we don't wanna pre-generate all of them,
+
+but maybe just our most popular pages.
+
+And therefore with fallback added now,
+
+if we save this again and reload,
+
+now we successfully load the page for this first meetup.
+
+If I go to M2, that also works.
+
+But if I enter M3, I get the default 404 page here
+
+because I had fallback set to false
+
+and M3 is not one of the supported parameters here.
+
+That's how this works.
+
+And getStaticPaths
+
+therefore is another important function,
+
+which you need in dynamic pages to tell NextJS
+
+for which dynamic parameter values
+
+this page should be pre-generated.
+
+And then again, getStaticProps executes for every page.
+
+So for every meetup ID value allows you to fetch data
+
+for that meetup and allows you to return props
+
+for that meetup.
+
+And as a side note here, where I locked the meetup ID
+
+we do see that here in this terminal.
+
+We don't see it in the browser,
+
+developer tools,
+
+here the console is empty
+
+because I mentioned that this is called the code
+
+instead of getStaticProps, which runs during build time.
+
+And when running in the development server
+
+it does run for every incoming request
+
+but only on the developer server side.
+
+So we only see it in the terminal of this developer server
+
+then, and not in the browser.
+
+That's how it getStaticProps works for dynamic pages
+
+and that's how it getStaticPaths works
+
+and why it is required.

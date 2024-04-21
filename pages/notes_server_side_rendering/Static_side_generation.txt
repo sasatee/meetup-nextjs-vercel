@@ -1,0 +1,229 @@
+Now to fully understand getStaticProps
+
+and also see what we can do with it,
+
+let's quit the dev server for now and run npm run build.
+
+This is the build command which you need
+
+to run before you deploy your NextJS site.
+
+Now, we are not going to deploy here
+
+but running it is still helpful and interesting.
+
+If we run npm run build here
+
+to build that production build,
+
+to create that production build,
+
+we see some output here.
+
+And in this output, we see what it did
+
+and that it generated some static pages, for example,
+
+four pages to be precise.
+
+And we see which pages it generated.
+
+And what we see here is that it generated the root page
+
+for slash nothing,
+
+the dynamic page for /meetupId,
+
+a 404 page, which is actually generates
+
+for us automatically by default
+
+in case we enter a invalid URL.
+
+And the new-meetup page.
+
+And then we got these icons here next to the pages.
+
+A filled dot and three empty dots.
+
+If we scroll down, we see a legend here
+
+and we learn that a filled dot
+
+is a statically generated site,
+
+that's what SSG stands for, Static Site Generation,
+
+which was automatically generated as HTML
+
+and JSON, which is then used for pre-fetching data
+
+once the page turned into a single page application.
+
+The empty dot stands for Static Generation.
+
+That's almost the same.
+
+The only difference is that here we got no initial props.
+
+So we have no initial data that was fetched
+
+and indeed, only for the root page,
+
+we are fetching data
+
+because that is the page where we added getStaticProps
+
+and that's why we have the filled dot here.
+
+Now, we will work on some other pages later,
+
+to be precise, we will work on the meetupId page soon
+
+but, for example, the new-meetup page
+
+does not need any data fetching.
+
+There, we, in the end, only render our form
+
+and we don't need any data here,
+
+we don't fetch any data from a server
+
+and therefore, the new-meetup page
+
+will always stay a static page with no content.
+
+So that is fine.
+
+But we will turn the meetupId page into a SSG page later
+
+but for the moment,
+
+we see that only the starting page,
+
+the root page is such a statically generated site.
+
+Now, with that, let's start the development server again
+
+and let's think about potential problems
+
+we could be facing when using getStaticProps.
+
+And one pretty big problem,
+
+which we could face in some websites,
+
+depending on what we're doing
+
+is that the data here could be outdated.
+
+This page, as I mentioned, is generated
+
+during the build process.
+
+So thereafter, we deploy it.
+
+If we then add more meetups to our database,
+
+this pre-generated page would not know about them.
+
+And if we don't add any client-side data fetching,
+
+we would always just see the outdated meetups here.
+
+And this could, of course, be a problem.
+
+Now, we can always rebuild our site
+
+and redeploy when our data changes.
+
+And for some websites, like personal blogs,
+
+this is a great alternative
+
+because there data doesn't change too frequently
+
+but if data does change more frequently,
+
+there is a extra property,
+
+which we can add to this returned object.
+
+And that's the revalidate property.
+
+When we add this property to the object returned
+
+by getStaticProps, we unlock a feature
+
+called incremental Static Generation.
+
+Revalidate wants a number,
+
+let's say 10, and this number is the number
+
+of seconds NextJS will wait
+
+until it regenerates this page
+
+for an incoming request.
+
+That means that with revalidate set to some number,
+
+this page will not just be generated
+
+during the build process.
+
+It will be generated there but not just
+
+but it will also be generated every couple of seconds
+
+on the server, at least if there are requests
+
+for this page.
+
+So that means that this page, with revalidate set to 10,
+
+would be regenerated on the server
+
+at least every 10 seconds if there are requests coming in
+
+for this page.
+
+And then these regenerated pages
+
+would replace the old pre-generated pages.
+
+And with that, you would ensure that your data
+
+is never older than 10 seconds.
+
+And therefore, the number of seconds
+
+you wanna use here depends
+
+on your data update frequency.
+
+If your data changes once every hour,
+
+then setting this to 3600 might be great.
+
+If it changes all the time, one second might be better.
+
+But whatever you set this number to,
+
+you will ensure that this page will occasionally
+
+be re pre-generated on the server after deployment
+
+so that you don't have to redeploy
+
+and rebuild all the time just because some data changed.
+
+It doesn't really matter to us here,
+
+especially not as long as we're just using this dummy array
+
+but it is an important feature you should know about
+
+and that is how you can set it

@@ -1,0 +1,113 @@
+Now, here in getStaticProps,
+
+you can do whatever you want,
+
+for example, fetch data from an API
+
+or from a database or read data from some files
+
+in the file system, like we do it
+
+in my full NextJS course, for example.
+
+But then once you're done with whatever you did
+
+to get the data you need,
+
+you need to return an object here in getStaticProps.
+
+You always need to return an object here.
+
+Now, in this object,
+
+you can configure various things
+
+but most importantly,
+
+you typically set a props property here
+
+and it has to be named props.
+
+And that then holds another object,
+
+which will be the props object you receive
+
+in your component function here
+
+in this page component function.
+
+This now receives a props object
+
+and the object will be the object you set as props here
+
+in getStaticProps.
+
+And there we could have our meetups key in there.
+
+The structure of this props object is totally up to you,
+
+which holds our DUMMY_MEETUPS.
+
+With that, those DUMMY_MEETUPS would be loaded
+
+and prepared in getStaticProps
+
+and then they would be set as props
+
+for this page component.
+
+Therefore, in this page component,
+
+we no longer need to manage state,
+
+we no longer need useEffect
+
+and we can therefore get rid of those imports here
+
+because now we get the data through props.
+
+And our meetups for the MeetupList component
+
+are props.meetsups.
+
+.meetups because I'm adding a meetups prop down there.
+
+And that's how we can move the data fetching away
+
+from the client to the server-side
+
+or to be precise to the during the build process side.
+
+If I now save everything,
+
+if we reload our page, we still see our meetups here
+
+but if I now view the page source,
+
+we see that we no longer have an empty unordered list,
+
+instead we have an unordered list,
+
+which has list items
+
+with the images and the title and so on.
+
+So now this is pre-rendered
+
+and it now contains the full HTML code
+
+and that's, of course, also great for search engines then
+
+because now, data is not fetched
+
+in a second component render cycle on the client
+
+but initially, before this page is pre-rendered,
+
+during the build process.
+
+And that's a great plus and one of the main features
+
+of NextJS, this data fetching for pre-rendering.
+
+And getStaticProps will be a function you use a lot
